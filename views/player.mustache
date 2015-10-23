@@ -34,6 +34,10 @@
   // start the socket
   var socket = io();
 
+  socket.on('connect', function() {
+    socket.emit('join', {room: '{{id}}'});
+  });
+
   // show the FAB when user inputs text onto card
   $('textarea').on('input', function() {
     $('button').css("margin-right", "0px");

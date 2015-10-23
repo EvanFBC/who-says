@@ -2,46 +2,129 @@ var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+var mustache = require('mustache-express');
+
+// mustache template engine
+app.engine('mustache', mustache());
+app.set('view engine', 'mustache');
+app.set('views', __dirname + '/views');
 
 app.use("/public", express.static(__dirname + '/public'));
 
-// the player view
-app.get('/', function(req, res){
-  res.sendFile(__dirname + '/index.html');
+var password = 'secretpassword';
+
+var roompool = {
+  rooms: {},
+
+  add: function(id) {
+    if (!this.get(id))
+      this.rooms[id] = {players: [], id: id};
+  },
+
+  get: function(id) {
+    return this.rooms[id];
+  },
+
+  remove: function(id) {
+    if (this.get(id))
+      delete this.rooms[id];
+  },
+
+  addPlayer: function(id, sock) {
+    var r = this.get(id);
+    if (r)
+      if (r.players.indexOf(sock) == -1)
+        r.players.push(sock);
+  },
+
+  removePlayer: function(id, sock) {
+    var r = this.get(id);
+    if (r) {
+      var index = r.players.indexOf(sock);
+      if (index != -1)
+        r.players.splice(index, 1);
+    }
+  },
+
+  emit: function(id) {
+    var args = new Array(arguments.length - 1);
+    for (i = 1; i < arguments.length; i++)
+      args[i-1] = arguments[i];
+
+    var r = this.get(id);
+    if (r)
+      for (var i = 0; i < r.players.length; i++)
+        r.players[i].emit.apply(r.players[i], args);
+  },
+
+  emitPlayerCount: function(id) {
+    var r = this.get(id);
+    if (r)
+      this.emit(id, 'count', r.players.length);
+  },
+};
+
+// add room
+app.get('/openroom/' + password + '/:room', function(req, res) {
+  roompool.add(req.params.room);
+  res.redirect('/' + req.params.room);
 });
 
-// the dealer view
-app.get('/middle', function(req, res){
-  res.sendFile(__dirname + '/index-middle.html');
+// remove room
+app.get('/closeroom/' + password + '/:room', function(req, res) {
+  roompool.remove(req.params.room);
+  res.set('Content-Type', 'text/plain');
+  res.send('ok')
 });
 
+var renderGame = function(req, res, view) {
+  var r = roompool.get(req.params.room);
+  if (r)
+    res.render(view, {id: r.id});
+  else
+    res.status(404).send('not found');
+};
 
-// track the number of players connected to the game
-var players = 0;
-io.on('connection', function(socket){
-  ++players;
-  io.emit('count', players);
-  socket.on('disconnect', function(){
-    --players;
-    io.emit('count', players);
+// dealer
+app.get('/:room/dealer', function(req, res) {
+  renderGame(req, res, 'dealer');
+});
+
+// player
+app.get('/:room', function(req, res) {
+  renderGame(req, res, 'player');
+});
+
+io.on('connection', function(sock) {
+  sock.on('join', function(d) {
+    var r = roompool.get(d.room);
+    if (r) {
+      sock.r = r;
+      roompool.addPlayer(r.id, sock);
+      roompool.emitPlayerCount(r.id);
+    }
   });
-});
 
-// track when an answer card is played
-io.on('connection', function(socket){
-  socket.on('answer', function(msg){
-    io.emit('answer', msg);
+  sock.on('disconnect', function() {
+    if (sock.r) {
+      roompool.removePlayer(sock.r.id, sock);
+      roompool.emitPlayerCount(sock.r.id);
+    }
   });
-});
 
-// track when a new question is dealt
-io.on('connection', function(socket){
-  socket.on('deal', function(msg){
-    io.emit('deal', msg);
-  });
+  var echo = function(evt) {
+    return function(d) {
+      if (sock.r)
+        roompool.emit(sock.r.id, evt, d);
+    };
+  };
+
+  sock.on('answer', echo('answer'));
+  sock.on('deal', echo('deal'));
 });
 
 // shhhh, just listen
-http.listen(3000, function(){
-  console.log('listening on *:3000');
+var port = process.env.PORT || 3000;
+http.listen(port, function() {
+  console.log('listening on *:' + port);
 });

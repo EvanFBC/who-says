@@ -60,6 +60,10 @@
   // start the socket
   var socket = io();
 
+  socket.on('connect', function() {
+    socket.emit('join', {room: '{{id}}'});
+  });
+
   // when a player connects or disconnects
   socket.on('count', function(players){
     $('#cards').empty().append('<li> </li>'.times(players-1));
