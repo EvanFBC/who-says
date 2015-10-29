@@ -7,6 +7,9 @@ var mustache = require('mustache-express');
 var Moniker = require('moniker');
 var bodyParser = require('body-parser');
 
+// Run this thing on heroku
+app.set('port', (process.env.PORT || 3000));
+
 // mustache template engine
 app.engine('mustache', mustache());
 app.set('view engine', 'mustache');
@@ -145,7 +148,6 @@ io.on('connection', function(sock) {
 });
 
 // shhhh, just listen
-var port = process.env.PORT || 3000;
-http.listen(port, function() {
+http.listen(app.get('port'), function() {
   console.log('listening on *:' + port);
 });
