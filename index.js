@@ -1,8 +1,11 @@
 var express = require('express');
+var bodyParser = require('body-parser');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var mustache = require('mustache-express');
+var Moniker = require('moniker');
+var bodyParser = require('body-parser');
 
 // mustache template engine
 app.engine('mustache', mustache());
@@ -10,6 +13,7 @@ app.set('view engine', 'mustache');
 app.set('views', __dirname + '/views');
 
 app.use("/public", express.static(__dirname + '/public'));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 var password = 'secretpassword';
 
@@ -75,6 +79,19 @@ app.get('/closeroom/' + password + '/:room', function(req, res) {
   roompool.remove(req.params.room);
   res.set('Content-Type', 'text/plain');
   res.send('ok')
+});
+
+app.get('/randomname', function(req, res){
+  var name = Moniker.choose();
+
+  res.set('Content-Type', 'text/plain');
+  res.send(name);
+});
+
+app.post('/host', function(req, res){
+  // TODO: better logic around hosting an existing room name
+  roompool.add(req.body.room);
+  res.redirect('/' + req.body.room + '/dealer');
 });
 
 var renderGame = function(req, res, view) {

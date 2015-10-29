@@ -26,13 +26,23 @@
     <main>
       <img src="https://cldup.com/R9ZSU8OjKZ.gif" width="150" alt="Who Says?" class="logo" />
 
-      <a class="host" href="#host">Host Game</a>
+      <div class="host">
+        <a class="host__button" href="#host">Host Game</a>
+        <form action="/host" method="post" >
+          <input type="text" name="room" />
+
+          <br />
+          <button class="button">Give me another</button>
+          <input class="button" type="submit" value="That sounds right" />
+        </form>
+      </div>
 
       <form class="join">
         <label>Join Game
           <input type="text" name="join" />
-          <input type="submit" value="Go" />
         </label>
+
+        <input class="button" type="submit" value="Go" />
       </form>
 
     </main>
@@ -40,6 +50,41 @@
   </body>
 
   <script>
+    (function(){
+        var $join = $('.join'),
+            $input = $join.find('input[type="text"]');
 
+        $join.on('submit', function(e){
+          e.preventDefault();
+          if(!$input.val())
+            return;
+
+          window.location.href = '/'+$input.val();
+        });
+    })();
+
+    (function(){
+        var $host = $('.host'),
+            $button = $host.children('.host__button'),
+            $form = $host.children('form'),
+            $input = $form.children('input[type="text"]'),
+            $another = $form.children('button'),
+            $submit = $form.children('input[type="submit"]');
+
+        $button.add($another).on('click', function(e){
+          e.preventDefault();
+          $.get('/randomname', function(data){
+            $button.hide();
+            $form.show();
+            $input.val(data).focus();
+          });
+        });
+
+        $form.on('submit', function(e){
+          if(!$input.val()){
+            e.preventDefault();
+          }
+        });
+    })();
   </script>
 </html>
