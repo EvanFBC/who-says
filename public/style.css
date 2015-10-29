@@ -10,9 +10,9 @@ textarea:focus, button:focus { outline: none; }
 .player{text-align: left;}
 .player .question{color:#fff; font-size:24px; font-weight: bold; padding:6% 15% 0;}
 
-.player .card textarea { border: 0; background: transparent; padding: 25px; width:100%; position: absolute; top:0; left:0; right:0; bottom:-10px; text-align: top; font-size:31px; font-weight: bold; resize: none;}
+.player .card textarea { color:black; border: 0; background: transparent; padding: 25px; width:100%; position: absolute; top:0; left:0; right:0; bottom:-10px; text-align: top; font-size:31px; font-weight: bold; resize: none;}
 .player .card #submit {position: absolute; top:28px; right:-28px; background:#007FFF; margin-right:-50%; transition:.3s ease margin;}
-.player .card{background:#fff; position: relative; border-radius:8px; margin:7% auto 0; width:80%; padding-top:105%; transition:.3s ease margin;}
+.player .card{ color:black; background:#fff; position: relative; border-radius:8px; margin:7% auto 0; width:80%; padding-top:105%; transition:.3s ease margin;}
 .player .card.played{margin-top:-90%;}
 
 .dealer .question{color:#fff; font-size:34px; font-weight: bold; max-width:75%; margin:0 auto; display: inline-block; text-align: left; margin-top:80px;}
@@ -27,7 +27,7 @@ textarea:focus, button:focus { outline: none; }
 #deal.high, #reveal.high{color:#fff;}
 
 .chooser{display:none; outline:none; margin-top:60px; width:100%;}
-.chooser .card {width: 65%; height: 80vh; margin-right: 70px; background: #fff; border-radius:10px; counter-increment: gallery-cell; font-size: 64px; font-weight: bold; padding:60px; text-align: left;}
+.chooser .card { color:black; width: 65%; height: 80vh; margin-right: 70px; background: #fff; border-radius:10px; counter-increment: gallery-cell; font-size: 64px; font-weight: bold; padding:60px; text-align: left;}
 
 .blink{background:#000 url(https://cldup.com/R9ZSU8OjKZ.gif) no-repeat 50% 90%; background-size: 150px auto;}
 .blank{display: inline-block; border-bottom:3px solid #fff; color:#000;}
