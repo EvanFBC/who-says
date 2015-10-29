@@ -149,5 +149,5 @@ io.on('connection', function(sock) {
 
 // shhhh, just listen
 http.listen(app.get('port'), function() {
-  console.log('listening on *:' + port);
+  console.log('starting app');
 });
