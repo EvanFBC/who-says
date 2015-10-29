@@ -95,6 +95,10 @@ app.get('/:room', function(req, res) {
   renderGame(req, res, 'player');
 });
 
+app.get('/', function(req, res) {
+    res.render('index');
+});
+
 io.on('connection', function(sock) {
   sock.on('join', function(d) {
     var r = roompool.get(d.room);

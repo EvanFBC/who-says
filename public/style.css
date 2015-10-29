@@ -1,6 +1,9 @@
-* { margin: 0; padding: 0; box-sizing: border-box;}
-html,body{min-height:100%vh; overflow-x: hidden; font-family:"Karla" !important; }
-body { font: 13px Helvetica, Arial; background:#000; text-align: center; }
+html { box-sizing: border-box; }
+*, *:before, *:after { box-sizing: inherit; }
+
+html { font-size:62.5%; }
+html,body{min-height:100vh; overflow-x: hidden; }
+body {font-family:"Karla", sans-serif; background:#000; text-align: center; color: white; line-height:normal; }
 
 textarea:focus, button:focus { outline: none; }
 
@@ -28,3 +31,12 @@ textarea:focus, button:focus { outline: none; }
 
 .blink{background:#000 url(https://cldup.com/R9ZSU8OjKZ.gif) no-repeat 50% 90%; background-size: 150px auto;}
 .blank{display: inline-block; border-bottom:3px solid #fff; color:#000;}
+
+.index { text-align: center; }
+.logo { display:block; margin:0 auto; }
+.host { display:inline-block; border: 6px solid white; border-radius: 4px; color:white; text-decoration:none; font-size:6.4rem; padding:.25em .5em; margin:1em 0; }
+
+.join { font-size:2.4rem; margin-top:1em; }
+.join input[type="text"] { margin-left:.5em; font-size:2.4rem; background:none; border:none; border-bottom: 3px solid white; color:rgba(255,255,255,0.9); line-height:2.4rem; font-family:'Karla', sans-serif; font-weight:400; }
+.join input[type="text"]:focus { outline:0; }
+.join input[type="submit"] { border: 3px solid white; border-radius: 2px; color:white; font-size:2.4rem; line-height:3.2rem; background:none; margin:0 .5em; padding:.1em .4em; }
